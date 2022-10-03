@@ -7,22 +7,48 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "xq-ios": "yarn ios --simulator= \"KwanI\"",
+    "format": "prettier --write \"**/*.{js,json,css,md}\" \"!package.json\""
   },
   "dependencies": {
+    "@react-navigation/core": "^6.4.0",
+    "@react-navigation/native": "^6.0.13",
+    "@react-navigation/native-stack": "^6.9.0",
     "patch-package": "^6.4.7",
     "react": "18.1.0",
-    "react-native": "0.70.1"
+    "react-native": "0.70.1",
+    "react-native-gesture-handler": "^2.6.2",
+    "react-native-reanimated": "^2.10.0",
+    "react-native-safe-area-context": "^4.4.1",
+    "react-native-screens": "^3.17.0",
+    "react-native-vision-camera": "2.10.0",
+    "typescript-plugin-css-modules": "^3.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/runtime": "^7.12.5",
     "@react-native-community/eslint-config": "^2.0.0",
+    "@types/jest": "^29.1.1",
+    "@types/react": "^18.0.21",
+    "@types/react-native": "^0.70.4",
+    "@types/react-test-renderer": "^18.0.0",
+    "autoprefixer": "^10.4.12",
     "babel-jest": "^26.6.3",
+    "cssnano": "^5.1.13",
     "eslint": "^7.32.0",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.72.1",
-    "react-test-renderer": "18.1.0"
+    "postcss": "^8.4.17",
+    "postcss-css-variables": "^0.18.0",
+    "postcss-import": "^15.0.0",
+    "postcss-loader": "^7.0.1",
+    "react-native-postcss-transformer": "^1.2.4",
+    "react-native-sass-transformer": "^2.0.0",
+    "react-test-renderer": "18.1.0",
+    "sass": "^1.55.0",
+    "style-loader": "^3.3.1",
+    "typescript": "^4.8.4"
   },
   "jest": {
     "preset": "react-native"
