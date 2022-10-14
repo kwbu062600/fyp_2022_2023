@@ -8,7 +8,7 @@
 
 import React from 'react';
 import {View, Text} from 'react-native';
-import Home from './apage/aroute/Home'
+import Home from './apage/aroute/Home';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MyStack from './apage/aroute/Stack';

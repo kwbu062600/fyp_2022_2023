@@ -2,22 +2,10 @@ import React, {useRef, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 
 import { Button,Text, View, SafeAreaView, StyleSheet } from 'react-native'
-// import { Camera, CameraDeviceFormat, frameRateIncluded, sortFormats, useCameraDevices } from 'react-native-vision-camera';
-// import Reanimated, { useSharedValue, useAnimatedGestureHandler, interpolate, useAnimatedProps, Extrapolate} from 'react-native-reanimated';
-// import { useIsFocused } from '@react-navigation/core';
-// import { useIsForeground } from '../component/useIsForeground';
 import { Camera, useCameraDevices} from 'react-native-vision-camera';
-// import { useIsFocused } from '@react-navigation/core';
-// import { PinchGestureHandler, PinchGestureHandlerGestureEvent, TapGestureHandler } from 'react-native-gesture-handler';
+
 import styles from '../css/Home.scss'
 
-// const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
-// Reanimated.addWhitelistedNativeProps({
-//     zoom: true,
-// });
-
-// const SCALE_FULL_ZOOM = 3;
-// const BUTTON_SIZE = 40;
 
 const HomePage = ({route, navigation}:any) => {
 
@@ -31,7 +19,6 @@ const HomePage = ({route, navigation}:any) => {
         setHasPermission(status === 'authorized');
     };
 
-
     useEffect(() => {
         requestCameraPermission();
     },[])
@@ -42,7 +29,6 @@ const HomePage = ({route, navigation}:any) => {
                 <Button title="Further emotion info" onPress={()=>navigation.navigate("Info")}></Button>
             </>
         );
-    
     }
 
     const handleBarCodeScanned = async () => {
