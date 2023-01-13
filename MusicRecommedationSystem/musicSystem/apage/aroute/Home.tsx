@@ -1,14 +1,13 @@
-import React, {useRef, useEffect, useState } from 'react';
-import { Platform } from 'react-native';
+import React, {useRef, useEffect, useState} from 'react';
+import {Platform} from 'react-native';
 
-import { Button,Text, View, SafeAreaView, StyleSheet } from 'react-native'
-import { Camera, useCameraDevices} from 'react-native-vision-camera';
+import {Button, Text, View, SafeAreaView, StyleSheet} from 'react-native';
+//import { Camera, useCameraDevices} from 'react-native-vision-camera';
 
-import styles from '../css/Home.scss'
+import styles from '../css/Home.scss';
 
-
-const HomePage = ({route, navigation}:any) => {
-
+const HomePage = ({route, navigation}: any) => {
+  /*
     const devices = useCameraDevices('wide-angle-camera')
     const device = devices.back
     const camera = useRef<Camera>(null);
@@ -51,7 +50,7 @@ const HomePage = ({route, navigation}:any) => {
                 ref={camera}
                 style={StyleSheet.absoluteFill}
                 device={device}
-                isActive={true} 
+                isActive={true}
                 torch={'off'}
                 photo={true}
               />
@@ -60,8 +59,7 @@ const HomePage = ({route, navigation}:any) => {
                 onPress={() =>handleBarCodeScanned()}></Button>
          </SafeAreaView>
     )
-
-    
+*/
 };
 
 export default HomePage;
