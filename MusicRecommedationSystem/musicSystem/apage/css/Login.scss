@@ -1,0 +1,62 @@
+
+
+.container {
+    flex: 1;
+    background-color: black;
+}
+.inputView {
+    padding:15px;
+    flex:2;
+    justify-content:center;
+    //background-color: white;
+}
+
+
+
+.iconView {
+    flex: 3;
+    align-items: center;
+    //background-color: gray;
+}
+.iconHolder {
+    padding: 5px;
+}
+.icon {
+   width: 150px;
+   height: 150px;
+}
+
+.imageContainer {
+    border: 1px solid;
+    padding: 10px;
+}
+.FbOuter {
+    background-color:white;
+    border-radius: 50px;
+}
+
+.image {
+    width: 30px;
+    height: 30px;
+}
+
+.btnView {
+    flex:3;
+    align-items: center;
+    //background-color: gray;
+}
+.btnList1{
+    margin-top: 15px;
+    flex-direction: row;
+}
+
+.socialLoginView {
+    flex:2;
+    justify-content: center;
+    flex-direction: row;
+   // background-color: gold;
+}
+
+.socialList{
+    margin:8px; 
+}
