@@ -11,8 +11,9 @@ import {
 import styles from '../css/Login.scss';
 import CusButton from '../component/CusButton';
 import CusInput from '../component/CusInput';
+import {navigate} from '@react-navigation/routers/lib/typescript/src/CommonActions';
 
-const LoginPage = () => {
+const LoginPage = ({navigation, route}: any) => {
   const [username, onChangeName] = useState('');
   const [password, onChangePassword] = useState('');
   const onLogin = () => {
@@ -33,6 +34,7 @@ const LoginPage = () => {
 
   const onGuest = () => {
     // next page
+    navigation.navigate('Home');
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -66,7 +68,7 @@ const LoginPage = () => {
           <CusButton text="Register" onPress={onLogin} />
         </View>
         <View style={{marginTop: 10}}>
-          <CusButton text="Guest" onPress={onLogin} />
+          <CusButton text="Guest" onPress={onGuest} />
         </View>
       </View>
       <View style={styles.socialLoginView}>

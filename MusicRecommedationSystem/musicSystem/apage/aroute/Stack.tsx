@@ -5,7 +5,7 @@ import Home from './Home';
 import Info from './MoodChoice';
 import Login from './Login';
 import {Text, View} from 'react-native';
-
+import styles from '../css/App.scss';
 const MyStack = () => {
   const Stack = createNativeStackNavigator();
   return (
@@ -20,7 +20,6 @@ const MyStack = () => {
           component={Login}
           options={{
             title: 'FaceSoMusic',
-            
             headerStyle: {
               backgroundColor: 'black',
             },
@@ -29,10 +28,23 @@ const MyStack = () => {
               fontSize: 34,
               fontWeight: 'bold',
             },
-            headerShadowVisible: true,
           }}
         />
-        <Stack.Screen name="Facial Detection" component={Home} />
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{
+            headerBackVisible: false,
+            headerStyle: {
+              backgroundColor: 'black',
+            },
+            headerTintColor: 'white',
+            headerTitleStyle: {
+              fontSize: 34,
+              fontWeight: 'bold',
+            },
+          }}
+        />
         <Stack.Screen
           name="Info"
           component={Info}
