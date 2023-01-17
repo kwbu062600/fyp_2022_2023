@@ -1,10 +1,10 @@
 import React from 'react';
 import {View, TouchableOpacity, Image} from 'react-native';
-const ImageBtn = ({source, ...action}: any) => {
+const ImageBtn = ({source, onPress, ...action}: any) => {
   return (
     <View>
-      <TouchableOpacity {...action}>
-        <Image source={source} />
+      <TouchableOpacity onPress={onPress}>
+        <Image {...action} source={source} />
       </TouchableOpacity>
     </View>
   );

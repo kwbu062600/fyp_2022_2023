@@ -34,6 +34,7 @@ const MyStack = () => {
           name="Home"
           component={Home}
           options={{
+            headerShown: false,
             headerBackVisible: false,
             headerStyle: {
               backgroundColor: 'black',
