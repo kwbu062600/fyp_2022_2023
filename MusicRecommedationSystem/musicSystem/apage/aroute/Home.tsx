@@ -5,7 +5,7 @@ import styles from '../css/Home.scss';
 import FuncBar from '../component/FuncBar';
 import ImageBtn from '../component/ImageBtn';
 import Region from '../component/Region';
-const HomePage = () => {
+const HomePage = ({navigation}: any) => {
   const name = 'Brian';
   const region = [
     {
@@ -47,7 +47,10 @@ const HomePage = () => {
       <View style={styles.recommendView}>
         <Text style={styles.rdText}>Recommend</Text>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <Region name={region[0].name} />
+          <Region
+            name={region[0].name}
+            onPress={() => navigation.navigate('Recommendation')}
+          />
           <Region name="America" />
           <Region name="Hong Kong" />
           <Region name="China" />
