@@ -53,6 +53,7 @@
 	<false/>
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs access to your Camera.</string>
-
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Allow microphone access to play audio</string>
 </dict>
 </plist>

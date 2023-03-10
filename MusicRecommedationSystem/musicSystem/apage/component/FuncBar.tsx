@@ -3,14 +3,17 @@ import {View, Text, Alert} from 'react-native';
 
 import styles from '../css/FuncBar.scss';
 import ImageBtn from './ImageBtn';
-const FuncBar = () => {
+const FuncBar = (props: any) => {
   const test = () => {
     Alert.alert('Hi');
   };
   return (
     <View style={styles.fixBar}>
       <View>
-        <ImageBtn source={require('../../image/home.png')} onPress={test} />
+        <ImageBtn
+          source={require('../../image/home.png')}
+          onPress={() => props.navigation.navigate('Login')}
+        />
         <Text style={styles.fixText}>Home</Text>
       </View>
       <View>

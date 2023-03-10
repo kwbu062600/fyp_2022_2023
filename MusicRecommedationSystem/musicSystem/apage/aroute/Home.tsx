@@ -1,65 +1,81 @@
-import React from 'react';
-import {SafeAreaView, View, Text, FlatList, ScrollView} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  FlatList,
+  ScrollView,
+  Image,
+} from 'react-native';
 
 import styles from '../css/Home.scss';
 import FuncBar from '../component/FuncBar';
 import ImageBtn from '../component/ImageBtn';
 import Region from '../component/Region';
-const HomePage = ({navigation}: any) => {
-  const name = 'Brian';
-  const region = [
-    {
-      id: 1,
-      name: 'Local',
-    },
-    {
-      id: 2,
-      name: 'America',
-    },
-    {
-      id: 3,
-      name: 'Asia',
-    },
-  ];
-  const RecommendComponent = () => {
-    return <Text style={styles.rdText}>Recommend</Text>;
-  };
+import {API_user} from '../api/api';
+import {fetchData} from '../api/usefulFunction';
 
-  const listItem = ({item}: any) => {
-    return (
-      <View style={styles.listView}>
-        <Text style={styles.rdText}>{item.name}</Text>
-      </View>
-    );
-  };
+interface Song {
+  songName: string;
+}
+const HomePage = ({navigation}: any) => {
+  //const name = 'Brian';
+  const [name, setName] = useState('');
+  const data = require('../../music/NCS.json');
+  // temp data
+  const [tempData, setTempData] = useState([]);
+  const regionData = data.slice(0, 5);
+  // fetch api
+  useEffect(() => {
+    fetchData(API_user).then(data => {
+      setTempData(data);
+      //setName(data[0]['name'])
+    });
+  }, []);
+
+  const regionComponents = [];
+  if (tempData.length > 0 && data) {
+    for (let i = 0; i < 5; i++) {
+      regionComponents.push(
+        <Region
+          key={i}
+          name={data[i].songName}
+          onPress={() => navigation.navigate('Recommendation', {song: data[i]})}
+        />,
+      );
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.greetingView}>
-        <Text style={styles.text}>Hi, {name}</Text>
-        <ImageBtn
-          style={styles.imageBtn}
-          source={require('../../image/search.png')}
+        {tempData.length > 0 && (
+          <>
+            <Text style={styles.text}>Hi, {tempData[0].name}</Text>
+
+            <ImageBtn
+              style={styles.imageBtn}
+              source={require('../../image/search.png')}
+              onPress={() => navigation.navigate('Scan')}
+            />
+          </>
+        )}
+      </View>
+      <View style={styles.bannerView}>
+        <Image
+          style={styles.bannerImage}
+          source={{uri: data[0].thumbnails.url}}
         />
       </View>
-      <View style={styles.bannerView} />
 
       <View style={styles.recommendView}>
         <Text style={styles.rdText}>Recommend</Text>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <Region
-            name={region[0].name}
-            onPress={() => navigation.navigate('Recommendation')}
-          />
-          <Region name="America" />
-          <Region name="Hong Kong" />
-          <Region name="China" />
-          <Region name="Japan" />
-          <Region name="England" />
+          {regionComponents}
         </ScrollView>
       </View>
 
-      <FuncBar />
+      <FuncBar navigation={navigation} />
     </SafeAreaView>
   );
 };
