@@ -1,0 +1,27 @@
+.container {
+    flex: 1;
+    background-color: black;
+}
+
+.btnContainer{
+    margin-top: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.notReady{
+    font-weight: bold;
+    color: white;
+    font-size: 38;
+    text-align: center;
+}
+
+.textContainer{
+    background-color: blue;
+    padding: 20px;
+}
+
+.innerContainer{
+    padding: 40px;
+    
+}

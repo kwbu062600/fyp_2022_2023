@@ -11,7 +11,6 @@ import {
 import styles from '../css/Login.scss';
 import CusButton from '../component/CusButton';
 import CusInput from '../component/CusInput';
-import {navigate} from '@react-navigation/routers/lib/typescript/src/CommonActions';
 
 const LoginPage = ({navigation, route}: any) => {
   const [username, onChangeName] = useState('');
@@ -34,7 +33,7 @@ const LoginPage = ({navigation, route}: any) => {
 
   const onGuest = () => {
     // next page
-    navigation.navigate('Home');
+    navigation.navigate('Facial Detection');
   };
   return (
     <SafeAreaView style={styles.container}>

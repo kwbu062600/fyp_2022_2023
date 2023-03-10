@@ -56,7 +56,7 @@ const HomePage = ({navigation}: any) => {
             <ImageBtn
               style={styles.imageBtn}
               source={require('../../image/search.png')}
-              onPress={() => navigation.navigate('Scan')}
+              onPress={() => navigation.navigate('Facial Detection')}
             />
           </>
         )}
