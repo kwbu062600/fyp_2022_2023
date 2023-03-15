@@ -36,6 +36,7 @@ const FacialDetection = ({navigation, route}: any) => {
         } catch (error) {
           Alert.alert(error.message);
         }
+        navigation.navigate("Home");
       };
     return (
         <SafeAreaView style={styles.container}>
@@ -57,9 +58,9 @@ const FacialDetection = ({navigation, route}: any) => {
                     <Text style={styles.notReady}>Your Device is unavailable</Text>
                 </View>
                 
-                {/* <View style={styles.btnContainer}>
+                <View style={styles.btnContainer}>
                         <CusButton text="Capture" onPress={takePhoto} />
-                </View> */}
+                </View>
             </View>
            )
            }
