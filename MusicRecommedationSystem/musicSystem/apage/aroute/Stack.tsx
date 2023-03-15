@@ -5,6 +5,8 @@ import Home from './Home';
 import Info from './MoodChoice';
 import Login from './Login';
 import Recommend from './Recommend';
+import User from './User';
+import UserSetting from './UserSetting';
 import {Text, View} from 'react-native';
 import styles from '../css/App.scss';
 const MyStack = () => {
@@ -51,6 +53,36 @@ const MyStack = () => {
           name="Recommendation"
           component={Recommend}
           options={{
+            headerStyle: {
+              backgroundColor: 'black',
+            },
+            headerTintColor: 'white',
+            headerTitleStyle: {
+              fontSize: 34,
+              fontWeight: 'bold',
+            },
+          }}
+        />
+        <Stack.Screen
+          name="Account"
+          component={User}
+          options={{
+            headerBackVisible: false,
+            headerStyle: {
+              backgroundColor: 'black',
+            },
+            headerTintColor: 'white',
+            headerTitleStyle: {
+              fontSize: 34,
+              fontWeight: 'bold',
+            },
+          }}
+        />
+         <Stack.Screen
+          name="User Setting"
+          component={UserSetting}
+          options={{
+            headerBackVisible: true,
             headerStyle: {
               backgroundColor: 'black',
             },
