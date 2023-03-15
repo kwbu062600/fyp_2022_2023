@@ -14,139 +14,98 @@ import ImageBtn from '../component/ImageBtn';
 import FuncBar from '../component/FuncBar';
 import TrackPlayer, {Capability} from 'react-native-track-player';
 import {useFocusEffect} from '@react-navigation/native';
-
+import PlayButton from '../component/Playbtn/PlayButton';
+import {fetchData} from '../api/usefulFunction'
 const Recommend = ({navigation, route}: any) => {
-  const {song} = route.params;
+  const {song, testData} = route.params;
   const [selectedImage, setSelectedImage] = useState({
     uri: song.thumbnails.url,
   });
-  // const [sound, setSound] = useState<Sound | null>(null);
-  // //Sound.setCategory('Playback');
-  // useEffect(() => {
-  //   const sound = new Sound(mp33, Sound.MAIN_BUNDLE, (error: any) => {
-  //     if (error) {
-  //       Alert.alert('Failed to load sound', error);
-  //       return;
-  //     }
-  //     setSound(sound);
-  //   });
-  //   return () => {
-  //     // cleanup function
-  //     if (sound) {
-  //       sound.release();
-  //     }
-  //   };
-  // }, []);
-
+  // const [isPlayerInitialize, setIsPlayerInitialize] = useState(false);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false)
   // fetch api - user's recommendation list(id, songName, singer, imageCover, music Source)
-  const testData = [
-    {
-      id: 1,
-      name: 'Your face Your name',
-      singer: 'Your face',
-      image: {uri: song.thumbnails.url},
-    },
-    {
-      id: 2,
-      name: 'Your face Your name',
-      singer: 'Your face',
-      image: require('../../image/home.png'),
-    },
-    {
-      id: 3,
-      name: 'Your face Your name',
-      singer: 'Your face',
-      image: require('../../image/home.png'),
-    },
-    {
-      id: 4,
-      name: 'Your face Your name',
-      singer: 'Your face',
-      image: require('../../image/home.png'),
-    },
-    {
-      id: 5,
-      name: 'Your face Your name',
-      singer: 'Your face',
-      image: require('../../image/home.png'),
-    },
-    {
-      id: 6,
-      name: 'Your face Your name',
-      singer: 'Your face',
-      image: require('../../image/home.png'),
-    },
-    {
-      id: 7,
-      name: 'Your face Your name',
-      singer: 'Your face',
-      image: require('../../image/home.png'),
-    },
-  ];
 
-  TrackPlayer.updateOptions({
-    capabilities: [Capability.Play, Capability.Pause],
-  });
-  const setupPlayer = async () => {
-    try {
+  useEffect(() => {
+    const initializePlayer = async () => {
       await TrackPlayer.setupPlayer();
-
-      // Add a track to the queue
       await TrackPlayer.add({
         id: '1',
         url: require('../../music/abc.mp3'),
-        title: 'Track Title',
-        artist: 'Track Artist',
       });
-    } catch (error) {}
-  };
+      await  TrackPlayer.updateOptions({
+        capabilities: [Capability.Play, Capability.Pause],
+      });
+    
+      TrackPlayer.play();
+    };
 
-  const songPlay = async (item: any) => {
-    setSelectedImage(item.image);
-    //TrackPlayer.reset();
-    TrackPlayer.play();
-  };
-
-  useEffect(() => {
-    setupPlayer();
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('blur', () => {
-      // 
-      Alert.alert('leave');
-      //await TrackPlayer.destroy();
-    });
+    const unsubscribe = navigation.addListener('focus', initializePlayer);
 
     return unsubscribe;
   }, [navigation]);
 
-  const addSongFav = (item: any) => {
-    Alert.alert('Added in your favourite list');
+  const songPlay = async (item: any) => {
+  
     setSelectedImage(item.image);
+    //TrackPlayer.reset();
+    resetTrack(require('../../music/abc.mp3'))
+    playTrack();
+    setIsAudioPlaying(!isAudioPlaying);
+  
+  };
+
+  const sendCallback =()=>{
+    setIsAudioPlaying(false);
+  }
+
+  const addSongFav = (item: any) => {
+    // add items call api
+    Alert.alert('Added in your favourite list');
   };
   useFocusEffect(
     React.useCallback(() => {
-      // Start playing the track when the screen is focused
+
       //TrackPlayer.play();
 
       return () => {
-        // Stop the player and destroy the track when leaving the screen
-        TrackPlayer.reset();
-        TrackPlayer.add({
+        resetFirstTime();
+      };
+    }, []),
+  );
+
+  useEffect(()=>{
+    const unsubscribe = navigation.addListener('focus', () => {
+      TrackPlayer.play();
+    });
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  },[navigation]);
+
+  const resetFirstTime = () => {
+    TrackPlayer.reset();
+    TrackPlayer.add({
           id: '1',
           url: require('../../music/abc.mp3'),
           title: 'Track Title',
           artist: 'Track Artist',
         });
-        //Alert.alert('AAAA');
-      };
-    }, []),
-  );
-  const controlSong = () => {
-    try {
-      TrackPlayer.pause();
-    } catch (error) {}
+  }
+
+  const resetTrack = (url) =>{
+    TrackPlayer.reset();
+    TrackPlayer.add({
+          id: '1',
+          url: url,
+          title: 'Track Title',
+          artist: 'Track Artist',
+        });
+  }
+  const pauseTrack = () => {
+    TrackPlayer.pause();
+  };
+
+  const playTrack = () => {
+    TrackPlayer.play();
   };
 
   const optionalList = (item: any) => {
@@ -163,6 +122,7 @@ const Recommend = ({navigation, route}: any) => {
         {
           text: 'Remove from List',
           onPress: () => {
+            // fetch remove api, pass id of list
             Alert.alert('Removed from List');
           },
         },
@@ -220,10 +180,12 @@ const Recommend = ({navigation, route}: any) => {
             source={require('../../image/add.png')}
             onPress={addSongFav}
           />
-          <ImageBtn
+          <PlayButton
             style={{top: 6}}
-            source={require('../../image/play.png')}
-            onPress={controlSong}
+            onPause={pauseTrack}
+            onPlay={playTrack}
+            audioIsPlaying={isAudioPlaying}
+            sendCallback={sendCallback}
           />
         </View>
         <View style={styles.listContainer}>

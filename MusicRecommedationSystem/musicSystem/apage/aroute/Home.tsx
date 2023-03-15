@@ -25,6 +25,54 @@ const HomePage = ({navigation}: any) => {
   // temp data
   const [tempData, setTempData] = useState([]);
   const regionData = data.slice(0, 5);
+
+  const testData = [
+    {
+      id: 1,
+      name: 'abc',
+      singer: 'Your face',
+      image: {uri: data[0].thumbnails.url},
+    },
+    {
+      id: 2,
+      name: 'Your face Your name',
+      singer: 'Your face',
+      image: require('../../image/home.png'),
+    },
+    {
+      id: 3,
+      name: 'Your face Your name',
+      singer: 'Your face',
+      image: require('../../image/home.png'),
+    },
+    {
+      id: 4,
+      name: 'Your face Your name',
+      singer: 'Your face',
+      image: require('../../image/home.png'),
+    },
+    {
+      id: 5,
+      name: 'Your face Your name',
+      singer: 'Your face',
+      image: require('../../image/home.png'),
+    },
+    {
+      id: 6,
+      name: 'Your face Your name',
+      singer: 'Your face',
+      image: require('../../image/home.png'),
+    },
+    {
+      id: 7,
+      name: 'Your face Your name',
+      singer: 'Your face',
+      image: require('../../image/home.png'),
+    },
+  ];
+
+
+
   // fetch api
   useEffect(() => {
     fetchData(API_user).then(data => {
@@ -40,7 +88,7 @@ const HomePage = ({navigation}: any) => {
         <Region
           key={i}
           name={data[i].songName}
-          onPress={() => navigation.navigate('Recommendation', {song: data[i]})}
+          onPress={() => navigation.navigate('Recommendation', {song: data[i], testData:testData})}
         />,
       );
     }
