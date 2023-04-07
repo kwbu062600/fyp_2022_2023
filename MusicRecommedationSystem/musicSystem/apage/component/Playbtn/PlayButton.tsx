@@ -22,7 +22,7 @@ const PlayButton = ({audioIsPlaying,onPlay, onPause ,...otherProps}) => {
     }
     
     setIsPlaying(!isPlaying);
-    Alert.alert(`Now action is ${isPlaying}`)
+    // Alert.alert(`Now action is ${isPlaying}`)
   };
 
   return (

@@ -11,12 +11,26 @@ import {
 import styles from '../css/Login.scss';
 import CusButton from '../component/CusButton';
 import CusInput from '../component/CusInput';
-
+import {server_host, API_user} from '../api/api'
+import { fetchData } from '../api/usefulFunction';
 const LoginPage = ({navigation, route}: any) => {
   const [username, onChangeName] = useState('');
   const [password, onChangePassword] = useState('');
-  const onLogin = () => {
-    Alert.alert('Hi');
+  const [id, setID] = useState('');
+  const ac = "Admin";
+  const pw = 123456;
+  const loginData = {
+    username: username,
+    password: password
+  }
+
+  const onLogin = async() => {
+    await fetchData(`${server_host}${API_user}`,'POST', undefined, loginData )
+    .then((response) => response.json())
+    .then((data) => {setID(data)})
+    if(id) {
+      navigation.navigate('Facial Detection',{id:id})
+    }
   };
 
   const onFacebook = () => {
@@ -33,7 +47,9 @@ const LoginPage = ({navigation, route}: any) => {
 
   const onGuest = () => {
     // next page
-    navigation.navigate('Facial Detection');
+    if (username == ac && password == pw) {
+      navigation.navigate('Facial Detection', {id:"1"});
+    }
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -70,7 +86,7 @@ const LoginPage = ({navigation, route}: any) => {
           <CusButton text="Guest" onPress={onGuest} />
         </View>
       </View>
-      <View style={styles.socialLoginView}>
+      {/* <View style={styles.socialLoginView}>
         <TouchableOpacity onPress={onGoogle}>
           <View style={styles.socialList}>
             <View
@@ -117,11 +133,11 @@ const LoginPage = ({navigation, route}: any) => {
                   style={styles.image}
                   source={require('../../image/apple.png')}
                 />
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
+              </View> */}
+            {/* </View> */}
+          {/* </View> */}
+        {/* </TouchableOpacity> */}
+      {/* </View> */}
     </SafeAreaView>
   );
 };

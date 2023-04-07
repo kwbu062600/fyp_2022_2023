@@ -10,7 +10,7 @@ const Region = (props: any) => {
       <View style={styles.imageView}>
         <ImageBtn
           style={styles.image}
-          source={{uri: data[0]["thumbnails"]["url"]}}
+          source={{uri: props.thumbnails}}
           onPress={props.onPress}
         />
       </View>

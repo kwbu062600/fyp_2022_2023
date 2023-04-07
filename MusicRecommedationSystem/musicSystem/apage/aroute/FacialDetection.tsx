@@ -15,12 +15,14 @@ import CusButton from '../component/CusButton';
 import { fetchData } from '../api/usefulFunction';
 import FuncBar from '../component/FuncBar';
 import { useFocusEffect } from '@react-navigation/native';
+import { server_host,API_expression, local_host } from '../api/api';
 const includeExtra = true;
 
-const FacialDetection = ({navigation}) => {
+const FacialDetection = ({navigation,route}:any) => {
+  const {id} = route.params
   const [response, setResponse] = React.useState<any>(null);
   const [base64, setBase64] = React.useState("");
-  const [moodRes, setMoodRes] = React.useState("");
+  const [moodRes, setMoodRes] = React.useState("Happy");
   const onButtonPress = React.useCallback((type, options) => {
     if (type === 'capture') {
       ImagePicker.launchCamera(options, (res)=>{
@@ -32,8 +34,8 @@ const FacialDetection = ({navigation}) => {
       });
     } 
     else if (type === 'Listen'){
-      if(base64){
-        navigation.navigate("Home");
+      if(base64&& moodRes){
+        navigation.navigate("Home", {id:id});
       }
       else{
         Alert.alert("Please take a photo!");
@@ -43,11 +45,11 @@ const FacialDetection = ({navigation}) => {
       ImagePicker.launchImageLibrary(options, setResponse);
     }
   }, [base64]);
-  React.useEffect(() => {
-    if (base64) {
-      Alert.alert(base64);
-    }
-  }, [base64]);
+  // React.useEffect(() => {
+  //   if (base64) {
+  //     Alert.alert(base64);
+  //   }
+  // }, [base64]);
   useFocusEffect(
     React.useCallback(() => {
       const unsubscribe = () =>{
@@ -59,14 +61,22 @@ const FacialDetection = ({navigation}) => {
       return () => unsubscribe();
     }, [])
   );
-  // React.useEffect(()=>{
-  //   fetchData("http://127.0.0.1:5000/expression", 'POST')
-  //   .then(response => response.json())
-  //   .then(data => Alert.alert(JSON.stringify(data)))
-  //   .catch(error => Alert.alert(JSON.stringify(error.message)));
 
-    
+  // React.useEffect(()=>{
+  //   fetchData(`${server_host}${API_expression}`, 'POST')
+  //   .then(response => response.json())
+  //   .then(data => {
+  //     setMoodRes(data)
+  //     Alert.alert(JSON.stringify(data))
+  //   })
+  //   .catch(error => Alert.alert(JSON.stringify(error.message)));
   // },[])
+
+  // React.useEffect(()=>{
+  //   fetchData("http://127.0.0.0.1:5000/recommend", 'POST', undefined,{emotion:"Happy"})
+  //   .then(response => response.json())
+  //   .then(data => {Alert.alert(JSON.stringify(data))})
+  // })
 
 
   return (
@@ -94,7 +104,7 @@ const FacialDetection = ({navigation}) => {
         </View>
          {base64 && (
           <>
-          <Text style={styles.text}>hi</Text>
+          <Text style={styles.text}>Please Click the Listen Music</Text>
           </>
          )}
         {moodRes && (

@@ -28,7 +28,8 @@ const MyStack = () => {
         // It can call by other screen with function navigate()
       }
       <Stack.Navigator 
-        initialRouteName= {!showPermissionsPage?'Permission': 'Facial Detection'}>
+        // initialRouteName= {!showPermissionsPage?'Permission': 'Facial Detection'}>
+        >
         <Stack.Screen
           name="Login"
           component={Login}
