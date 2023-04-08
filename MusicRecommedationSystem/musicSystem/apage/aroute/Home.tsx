@@ -74,7 +74,7 @@ const HomePage = ({navigation, route}: any) => {
   ];
 
   const sendData = {
-    emotion: "Happy"
+    emotion: "Sad"
   }
 
   // useEffect(() => {
@@ -155,50 +155,60 @@ const HomePage = ({navigation, route}: any) => {
   if (recommendSong){
     if (recommendSong.length>0) {
       for (let i = 0; i < 5; i++) {
-        regionComponents.push(
-          <Region
-            key={i}
-            name={recommendSong[i]["Song name"]}
-            thumbnails={recommendSong[i]["thumbnails"]}
-            onPress={() => navigation.navigate('Recommendation', {song: data[i], testData:recommendSong, index:recommendSong[i], id:id})}
-          />,
-        );
+        try{
+          regionComponents.push(
+            <Region
+              key={i}
+              name={recommendSong[i]["Song name"]}
+              thumbnails={recommendSong[i]["thumbnails"]}
+              onPress={() => navigation.navigate('Recommendation', {testData:recommendSong, index:recommendSong[i], id:id, method:"recommend"})}
+            />,
+          );
+        }catch(e) {
+          console.error(e)
+        }
       }
     }
   }else{
     for (let i = 0; i < 5; i++) {
-      regionComponents.push(
-        <Region
-          key={i}
-          name={data[i]["songName"]}
-          thumbnails={data[i]["thumbnails"]["url"]}
-          onPress={() => navigation.navigate('Recommendation', {song: data[i], testData:testData, id:id})}
-        />,
-      );
+      try{
+        regionComponents.push(
+          <Region
+            key={i}
+            name={data[i]["songName"]}
+            thumbnails={data[i]["thumbnails"]["url"]}
+            onPress={() => navigation.navigate('Recommendation', {testData:testData, id:id, method:"recommend"})}
+          />,
+        );
+      }catch(e){
+        console.error(e);
+      }
     }
   }
 
   const contentbaseList = [];
   if (contentbaseSong){
-    const tempData = Object.values(contentbaseSong)
-   
-    if (contentbaseSong.length>0) {
-      for (let i = 0; i < 5; i++) {
-        contentbaseList.push(
-          <Region
-            key={i}
-            name={contentbaseSong[i]["Song name"]}
-            thumbnails={contentbaseSong[i]["thumbnails"]}
-            onPress={() => navigation.navigate('Recommendation', {song: data[i], testData:contentbaseSong, id:id, index:contentbaseSong[i]})}
-          />,
-        );
+    try{
+      if (contentbaseSong.length>0) {
+        for (let i = 0; i < 5; i++) {
+          
+            contentbaseList.push(
+              <Region
+                key={i}
+                name={contentbaseSong[i]["Song name"]}
+                thumbnails={contentbaseSong[i]["thumbnails"]}
+                onPress={() => navigation.navigate('Recommendation', {testData:contentbaseSong, id:id, index:contentbaseSong[i], method:"recommend"})}
+              />,
+            );
+          
+        }
+      }else{
+        contentbaseList.push(<></>)
       }
+    } catch (e){
+      console.log(e)
     }
-  }else{
-    contentbaseList.push(<></>)
   }
-
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.greetingView}>
@@ -209,7 +219,7 @@ const HomePage = ({navigation, route}: any) => {
             <ImageBtn
               style={styles.imageBtn}
               source={require('../../image/search.png')}
-              onPress={() => navigation.navigate('Facial Detection')}
+              onPress={() => navigation.navigate('Facial Detection',{id:id})}
             />
           </>
         )}
@@ -259,7 +269,7 @@ const HomePage = ({navigation, route}: any) => {
         )
         }
 
-      <FuncBar navigation={navigation} />
+      <FuncBar navigation={navigation} id={id} />
     </SafeAreaView>
   );
 };

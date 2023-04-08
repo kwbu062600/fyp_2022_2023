@@ -12,12 +12,12 @@ const FuncBar = (props: any) => {
       <View>
         <ImageBtn
           source={require('../../image/home.png')}
-          onPress={() => props.navigation.navigate('Login')}
+          onPress={() => props.navigation.navigate('Home',{id:props.id})}
         />
         <Text style={styles.fixText}>Home</Text>
       </View>
       <View>
-        <ImageBtn source={require('../../image/media.png')} onPress={()=>props.navigation.navigate("Music library")} />
+        <ImageBtn source={require('../../image/media.png')} onPress={()=>props.navigation.navigate("My Library",{id:props.id})} />
         <Text style={styles.fixText}>Music</Text>
       </View>
       <View>

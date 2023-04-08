@@ -8,6 +8,7 @@ import Login from './Login';
 import Recommend from './Recommend';
 import Permission from './Permission';
 import Register from './Register';
+import MusicLibrary from './MusicLibrary';
 import {Text, View} from 'react-native';
 import styles from '../css/App.scss';
 import { Camera, CameraPermissionStatus } from 'react-native-vision-camera';
@@ -101,6 +102,21 @@ const MyStack = () => {
         />
         <Stack.Screen name="Register" component={Register} 
           options={{
+            headerTitleStyle: {
+              fontSize: 34,
+              fontWeight: 'bold',
+            },
+          }}
+        />
+         <Stack.Screen
+          name="My Library"
+          component={MusicLibrary}
+          options={{
+            headerBackVisible: false,
+            headerStyle: {
+              backgroundColor: 'black',
+            },
+            headerTintColor: 'white',
             headerTitleStyle: {
               fontSize: 34,
               fontWeight: 'bold',

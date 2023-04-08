@@ -22,8 +22,10 @@ const FacialDetection = ({navigation,route}:any) => {
   const {id} = route.params
   const [response, setResponse] = React.useState<any>(null);
   const [base64, setBase64] = React.useState("");
+  // var base64 = "";
   const [moodRes, setMoodRes] = React.useState("Happy");
-  const onButtonPress = React.useCallback((type, options) => {
+  const onButtonPress = React.useCallback((type:any, options:any) => {
+    
     if (type === 'capture') {
       ImagePicker.launchCamera(options, (res)=>{
         setResponse(res)

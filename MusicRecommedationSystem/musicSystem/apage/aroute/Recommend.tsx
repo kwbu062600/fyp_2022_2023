@@ -24,7 +24,7 @@ import {doc,getDocs, collection,getDoc, updateDoc, FieldValue, arrayUnion} from 
 import jwtDecode from 'jwt-decode'; 
 
 const Recommend = ({navigation, route}: any) => {
-    const {song, testData, index, id} = route.params;
+    const {testData, index, id, method} = route.params;
     const [selectedImage, setSelectedImage] = useState({
       uri: index.thumbnails,
     });
@@ -32,11 +32,11 @@ const Recommend = ({navigation, route}: any) => {
     const [isAudioPlaying, setIsAudioPlaying] = useState(false);
     const [isInitial, setIsInitial] = useState(false);
     const [trackName, setTrackName] = useState(index["Song name"].split('-')[1]?.trim().replace('[NCS Release]',''));
-    const mus = music_host + "/" + index["Song name"]+ ".mp3";
-    // Alert.alert(mus.replaceAll(" ","%20").replaceAll("[","%5B").replaceAll("]","%5D").replaceAll("&","%26").replaceAll("(","%28").replaceAll(")","%29").replaceAll("||",","))
+    // const mus = music_host + "/" + testData[4]["Song name"]+ ".mp3";
+    // Alert.alert(mus.replaceAll(" ","%20").replaceAll("[","%5B").replaceAll("]","%5D").replaceAll("&","%26").replaceAll("(","%28").replaceAll(")","%29").replaceAll("||",""))
     const tracks = testData.map(track => ({
       id:track.id,
-      url: music_host + "/" + track["Song name"]+ ".mp3".replaceAll(" ","%20").replaceAll("[","%5B").replaceAll("]","%5D").replaceAll("&","%26").replaceAll("(","%28").replaceAll(")","%29").replaceAll("||",","),
+      url: music_host + "/" + track["Song name"]+ ".mp3".replaceAll(" ","%20").replaceAll("[","%5B").replaceAll("]","%5D").replaceAll("&","%26").replaceAll("(","%28").replaceAll(")","%29").replaceAll("||",""),
       title: track["Song name"],
       artist: track.Singer,
       artwork: track.thumbnails
@@ -256,12 +256,15 @@ const Recommend = ({navigation, route}: any) => {
             <Text style={styles.songName} ellipsizeMode="tail" numberOfLines={2}>{filteredName.substring(0,20)}</Text>
             <Text style={styles.singer}  ellipsizeMode="tail" numberOfLines={2}>{item["Singer"].substring(0,20)}</Text>
           </View>
-          <View style={styles.optionView}>
-            <ImageBtn
-              source={require('../../image/option.png')}
-              onPress={() => optionalList(item)}
-            />
-          </View>
+          
+          {method=="recommend"&&
+            <View style={styles.optionView}>
+              <ImageBtn
+                source={require('../../image/option.png')}
+                onPress={() => optionalList(item)}
+              />
+            </View>
+          }
         </View>
       );
     };
@@ -283,20 +286,24 @@ const Recommend = ({navigation, route}: any) => {
         </View>
 
         <View style={styles.btnView}>
-          {currentSong&&
-          <ImageBtn
-            style={{margin:6}}
-            source={require('../../image/add.png')}
-            onPress={()=>addSongFav(currentSong)}
-          />
+          {currentSong&&method=="recommend"&&
+          <View style={{paddingLeft:27}}>
+            <ImageBtn
+              style={{margin:6}}
+              source={require('../../image/add.png')}
+              onPress={()=>addSongFav(currentSong)}
+            />
+            </View>
           }
-          <PlayButton
-            style={{margin: 6,left:12}}
-            onPause={pauseTrack}
-            onPlay={playTrack}
-            audioIsPlaying={isAudioPlaying}
-            sendCallback={sendCallback}
-          />
+          <View style={styles.playBtn}>
+            <PlayButton
+              style={{margin: 6}}
+              onPause={pauseTrack}
+              onPlay={playTrack}
+              audioIsPlaying={isAudioPlaying}
+              sendCallback={sendCallback}
+            />
+          </View>
         </View>
         <View style={styles.listContainer}>
           <FlatList
@@ -307,7 +314,7 @@ const Recommend = ({navigation, route}: any) => {
           />
         </View>
       </View>
-      <FuncBar navigation={navigation} />
+      <FuncBar navigation={navigation} id={id}/>
     </SafeAreaView>
   );
 };
@@ -343,16 +350,24 @@ const styles = StyleSheet.create({
   },
   btnView:{
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
     height: 60,
-    paddingLeft: 36,
-    paddingRight: 36,
+    // paddingLeft: 36,
+    // paddingRight: 36,
     backgroundColor: 'rgba(5, 0, 38,1)',
     borderStyle: 'solid',
     borderBottomColor: 'white',
     borderWidth: 0.5,
+  },
+  playBtn:{
+    flex:1,
+    flexDirection: 'row',
+    // backgroundColor: 'blue',
+    width:'100%',
+    justifyContent: 'flex-end',
+    paddingRight:27
   },
   listContainer:{
     height: 250,
@@ -392,6 +407,7 @@ const styles = StyleSheet.create({
   optionView:{
     position: "absolute",
     right: 15,
+    top:3
   },
   nowPlayingText:{
     color: 'white',
