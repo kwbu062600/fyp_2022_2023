@@ -15,7 +15,9 @@ import ImageBtn from '../component/ImageBtn';
 import Region from '../component/Region';
 import {server_host,API_user,API_user_song, music_host, local_host } from '../api/api';
 import {fetchData} from '../api/usefulFunction';
-
+import { auth, firestore } from '../../service/firebase';
+import {doc,getDocs, collection,getDoc} from 'firebase/firestore';
+import jwtDecode from 'jwt-decode'; 
 const HomePage = ({navigation, route}: any) => {
   const {id} = route.params;
   //const name = 'Brian';
@@ -24,7 +26,8 @@ const HomePage = ({navigation, route}: any) => {
   // temp data
   const [recommendSong, setRecommendSong] = useState(undefined);
   const regionData = data.slice(0, 5);
-
+  const [pastListenSong, setPastListenSong] = useState(undefined);
+  const [contentbaseSong, setContentbaseSong] = useState(undefined);
   const testData = [
     {
       id: 1,
@@ -74,12 +77,59 @@ const HomePage = ({navigation, route}: any) => {
     emotion: "Happy"
   }
 
-  // useEffect(()=>{
-  //   fetchData(`${server_host}${API_user}/${id}`)
-  // },[])
+  // useEffect(() => {
+    
+  // }, []);
+
   // http://127.0.0.1:5000/recommend
    useEffect(() => {
-    fetch("http://192.168.0.102:5000/recommend",{
+    const unsubscribe = navigation.addListener('focus', async() => {
+
+      const getUserData = async () => {
+        try{
+          // Alert.alert(id)
+          const decodedToken = jwtDecode(id);
+  
+          const userId = decodedToken["user_id"];
+          // Alert.alert(JSON.stringify(userId))
+          const userRef = doc(firestore, "users", userId);
+    
+          const userSnap = await getDoc(userRef);
+  
+          const data = userSnap.data();
+          if(data){
+            setPastListenSong(data.pastListenSongs);
+            // Alert.alert(JSON.stringify({pastListenSongs:data.pastListenSongs}))
+            if(data.pastListenSongs){
+
+              fetch("http://192.168.0.102:5000/contentbase",{
+              method: "POST",
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                pastListenSongs: data.pastListenSongs
+              }),
+            }).then(response => response.json())
+                .then(json => {
+                  //  Alert.alert(JSON.stringify(json))
+                  setContentbaseSong(json)
+                }).catch(error => {
+                  console.error(error);
+                });
+            }
+            setName(data.name);
+          }
+  
+        } catch (error) {
+          console.error(error)
+        }
+      };
+  
+      getUserData();
+
+      fetch("http://192.168.0.102:5000/recommend",{
       method: "POST",
       headers: {
         Accept: 'application/json',
@@ -95,11 +145,14 @@ const HomePage = ({navigation, route}: any) => {
         }).catch(error => {
           console.error(error);
         });
-  }, []);
+    
+    });
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   const regionComponents = [];
   if (recommendSong){
-    // Alert.alert("has")
     if (recommendSong.length>0) {
       for (let i = 0; i < 5; i++) {
         regionComponents.push(
@@ -107,24 +160,44 @@ const HomePage = ({navigation, route}: any) => {
             key={i}
             name={recommendSong[i]["Song name"]}
             thumbnails={recommendSong[i]["thumbnails"]}
-            onPress={() => navigation.navigate('Recommendation', {song: data[i], testData:recommendSong, index:recommendSong[i]})}
+            onPress={() => navigation.navigate('Recommendation', {song: data[i], testData:recommendSong, index:recommendSong[i], id:id})}
           />,
         );
       }
     }
   }else{
-    // Alert.alert("next")
     for (let i = 0; i < 5; i++) {
       regionComponents.push(
         <Region
           key={i}
           name={data[i]["songName"]}
           thumbnails={data[i]["thumbnails"]["url"]}
-          onPress={() => navigation.navigate('Recommendation', {song: data[i], testData:testData})}
+          onPress={() => navigation.navigate('Recommendation', {song: data[i], testData:testData, id:id})}
         />,
       );
     }
   }
+
+  const contentbaseList = [];
+  if (contentbaseSong){
+    const tempData = Object.values(contentbaseSong)
+   
+    if (contentbaseSong.length>0) {
+      for (let i = 0; i < 5; i++) {
+        contentbaseList.push(
+          <Region
+            key={i}
+            name={contentbaseSong[i]["Song name"]}
+            thumbnails={contentbaseSong[i]["thumbnails"]}
+            onPress={() => navigation.navigate('Recommendation', {song: data[i], testData:contentbaseSong, id:id, index:contentbaseSong[i]})}
+          />,
+        );
+      }
+    }
+  }else{
+    contentbaseList.push(<></>)
+  }
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -157,13 +230,14 @@ const HomePage = ({navigation, route}: any) => {
         </View>
       )}
       {recommendSong && recommendSong.length > 0 ? (
-        <View style={styles.recommendView}>
-          <Text style={styles.rdText}>Recommend</Text>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {regionComponents}
-          </ScrollView>
-        </View>
-      
+       
+          <View style={styles.recommendView}>
+            <Text style={styles.rdText}>Recommend</Text>
+
+              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                {regionComponents}
+              </ScrollView>
+            </View>
       ): (
         <View style={styles.recommendView}>
           <Text style={styles.rdText}>Recommend</Text>
@@ -173,6 +247,18 @@ const HomePage = ({navigation, route}: any) => {
         </View>
       )
       }
+       {contentbaseList&&(
+          <View style={styles.contentRecommendView}>
+            <Text style={styles.rdText}>Similar Song</Text>
+              <ScrollView>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                  {contentbaseList}
+                </ScrollView>
+              </ScrollView>
+          </View>
+        )
+        }
+
       <FuncBar navigation={navigation} />
     </SafeAreaView>
   );

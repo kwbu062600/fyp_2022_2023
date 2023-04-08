@@ -17,7 +17,7 @@ const FuncBar = (props: any) => {
         <Text style={styles.fixText}>Home</Text>
       </View>
       <View>
-        <ImageBtn source={require('../../image/media.png')} onPress={test} />
+        <ImageBtn source={require('../../image/media.png')} onPress={()=>props.navigation.navigate("Music library")} />
         <Text style={styles.fixText}>Music</Text>
       </View>
       <View>

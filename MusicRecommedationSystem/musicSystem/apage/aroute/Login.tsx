@@ -13,10 +13,14 @@ import CusButton from '../component/CusButton';
 import CusInput from '../component/CusInput';
 import {server_host, API_user} from '../api/api'
 import { fetchData } from '../api/usefulFunction';
+import {signInWithEmailAndPassword} from 'firebase/auth';
+import { auth, firestore } from '../../service/firebase';
+import {doc,getDocs, collection} from 'firebase/firestore';
 const LoginPage = ({navigation, route}: any) => {
   const [username, onChangeName] = useState('');
   const [password, onChangePassword] = useState('');
   const [id, setID] = useState('');
+  const [token, setToken] = useState('');
   const ac = "Admin";
   const pw = 123456;
   const loginData = {
@@ -31,6 +35,23 @@ const LoginPage = ({navigation, route}: any) => {
     if(id) {
       navigation.navigate('Facial Detection',{id:id})
     }
+  };
+
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, username, password)
+      .then((userCredential) => {
+        console.log("User logged in");
+        userCredential.user.getIdToken().then((token) => {
+          setToken(token);
+          navigation.navigate('Home',{
+            id:token
+          })
+        });
+      }) 
+      .catch((error) => {
+        // console.error("Error logging in: ", error);
+        Alert.alert("Please enter correct account information");
+      });
   };
 
   const onFacebook = () => {
@@ -51,6 +72,12 @@ const LoginPage = ({navigation, route}: any) => {
       navigation.navigate('Facial Detection', {id:"1"});
     }
   };
+
+  const onRegister = () => {
+    // next page
+    navigation.navigate('Register');
+    
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.iconView}>
@@ -64,7 +91,7 @@ const LoginPage = ({navigation, route}: any) => {
       <View style={styles.inputView}>
         <CusInput
           setValue={onChangeName}
-          placeholder="Username"
+          placeholder="Email"
           value={username}
           hide={false}
         />
@@ -79,8 +106,8 @@ const LoginPage = ({navigation, route}: any) => {
 
       <View style={styles.btnView}>
         <View style={styles.btnList1}>
-          <CusButton text="Login" onPress={onLogin} />
-          <CusButton text="Register" onPress={onLogin} />
+          <CusButton text="Login" onPress={handleLogin} />
+          <CusButton text="Register" onPress={onRegister} />
         </View>
         <View style={{marginTop: 10}}>
           <CusButton text="Guest" onPress={onGuest} />

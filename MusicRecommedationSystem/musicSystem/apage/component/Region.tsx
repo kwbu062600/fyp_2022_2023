@@ -15,7 +15,7 @@ const Region = (props: any) => {
         />
       </View>
       <View style={styles.caption}>
-        <Text key={props.index} style={styles.text}>{filteredName}</Text>
+        <Text key={props.index} style={styles.text}>{filteredName.substring(0,20)}</Text>
       </View>
     </View>
   );

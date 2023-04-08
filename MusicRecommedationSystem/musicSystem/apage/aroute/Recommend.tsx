@@ -19,184 +19,252 @@ import {useFocusEffect} from '@react-navigation/native';
 import PlayButton from '../component/Playbtn/PlayButton';
 import { music_host } from '../api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const Recommend = ({navigation, route}: any) => {
-  const {song, testData, index} = route.params;
-  const [selectedImage, setSelectedImage] = useState({
-    uri: index.thumbnails,
-  });
-  // const [isPlayerInitialize, setIsPlayerInitialize] = useState(false);
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [isInitial, setIsInitial] = useState(false);
-  const [trackName, setTrackName] = useState(index["Song name"].split('-')[1]?.trim().replace('[NCS Release]',''));
-  const tracks = testData.map(track => ({
-    id:track.id,
-    url: music_host + "/" + track["Song name"]+ ".mp3".replaceAll(" ","%20"),
-    title: track["Song name"],
-    artist: track.Singer,
-    artwork: track.thumbnails
-  }));
+import { auth , firestore} from '../../service/firebase';
+import {doc,getDocs, collection,getDoc, updateDoc, FieldValue, arrayUnion} from 'firebase/firestore';
+import jwtDecode from 'jwt-decode'; 
 
-  // Alert.alert(isInitial.toString());
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('@trackplayer')
-      if(value !== null) {
-        setIsInitial(true);
-      }
-      else{
-        setIsInitial(false);
-      }
-    } catch(e) {
-      // error reading value
-    }
-  }
-  getData()
-  useEffect(() => {
-    const initializePlayer = async () => {
+const Recommend = ({navigation, route}: any) => {
+    const {song, testData, index, id} = route.params;
+    const [selectedImage, setSelectedImage] = useState({
+      uri: index.thumbnails,
+    });
+    // const [isPlayerInitialize, setIsPlayerInitialize] = useState(false);
+    const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+    const [isInitial, setIsInitial] = useState(false);
+    const [trackName, setTrackName] = useState(index["Song name"].split('-')[1]?.trim().replace('[NCS Release]',''));
+    const mus = music_host + "/" + index["Song name"]+ ".mp3";
+    // Alert.alert(mus.replaceAll(" ","%20").replaceAll("[","%5B").replaceAll("]","%5D").replaceAll("&","%26").replaceAll("(","%28").replaceAll(")","%29").replaceAll("||",","))
+    const tracks = testData.map(track => ({
+      id:track.id,
+      url: music_host + "/" + track["Song name"]+ ".mp3".replaceAll(" ","%20").replaceAll("[","%5B").replaceAll("]","%5D").replaceAll("&","%26").replaceAll("(","%28").replaceAll(")","%29").replaceAll("||",","),
+      title: track["Song name"],
+      artist: track.Singer,
+      artwork: track.thumbnails
+    }));
+    const [currentSong, setCurrentSong] = useState(undefined);
+
+    // Alert.alert(isInitial.toString());
+    const getData = async () => {
       try {
-        if(!isInitial){
-          // Alert.alert("initilize")
-          await TrackPlayer.setupPlayer();
-          await TrackPlayer.add(tracks);
-          await TrackPlayer.updateOptions({
-            capabilities: [Capability.Play, Capability.Pause, Capability.Skip, Capability.SkipToNext],
-          });
+        const value = await AsyncStorage.getItem('@trackplayer')
+        if(value !== null) {
           setIsInitial(true);
-          
+        }
+        else{
+          setIsInitial(false);
+        }
+      } catch(e) {
+        // error reading value
+        console.error(e);
+      }
+    }
+    getData()
+    useEffect(() => {
+      const initializePlayer = async () => {
+        try {
+          if(!isInitial){
+            // Alert.alert("initilize")
+            await TrackPlayer.setupPlayer();
+            await TrackPlayer.add(tracks);
+            await TrackPlayer.updateOptions({
+              capabilities: [Capability.Play, Capability.Pause, Capability.Skip, Capability.SkipToNext],
+            });
+            setIsInitial(true);
+            
+          }
+        } catch (error) {
+          console.log('Failed to initialize or play track', error);
+          // handle error, e.g. show an error message
+          setIsInitial(true);
+        }
+        try{
+          TrackPlayer.skip(index.id-1);
+          TrackPlayer.play();
+          updateMethod(index);
+          setCurrentSong(index);
+        }catch(e){
+          console.error(e)
+        }
+        // Alert.alert(JSON.stringify(tracks[index.id-1]))
+      };
+      
+      const unsubscribe = navigation.addListener('focus', initializePlayer);
+    
+      return unsubscribe;
+    }, [navigation]);
+
+    const updateMethod = async (song:any) => {
+      try{
+        const decodedToken = jwtDecode(id);
+        // Alert.alert(JSON.stringify(decodedToken["user_id"]))
+        const userId = decodedToken["user_id"];
+        // Alert.alert(userId)
+        
+        const userRef = doc(firestore, "users", userId);
+        const userSnap = await getDoc(userRef);
+        if(userSnap.exists() && userSnap.data().pastListenSongs){
+          await updateDoc(userRef, {
+            pastListenSongs: arrayUnion(song),
+          })
+        }
+        else{
+          await updateDoc(userRef, {
+            pastListenSongs: [],
+          })
+          await updateDoc(userRef, {
+            pastListenSongs: arrayUnion(song),
+          })
         }
       } catch (error) {
-        console.log('Failed to initialize or play track', error);
-        // handle error, e.g. show an error message
-        setIsInitial(true);
+        console.error(error)
       }
-      TrackPlayer.skip(index.id-1);
-          TrackPlayer.play();
+    };
+    // Alert.alert(`Current position: ${position}, duration: ${duration}`);
+    const songPlay = async (item: any) => {
+      const filteredName = item["Song name"].split('-')[1]?.trim().replace('[NCS Release]','');
+      setSelectedImage({uri:item["thumbnails"]});
+      TrackPlayer.skip(item.id-1);
+      setTrackName(filteredName);
+      playTrack();
+      setIsAudioPlaying(!isAudioPlaying);
+      updateMethod(item)
+      setCurrentSong(item);
     };
     
-    const unsubscribe = navigation.addListener('focus', initializePlayer);
-  
-    return unsubscribe;
-  }, [navigation]);
-  
-  // Alert.alert(`Current position: ${position}, duration: ${duration}`);
-  const songPlay = async (item: any) => {
-    const filteredName = item["Song name"].split('-')[1]?.trim().replace('[NCS Release]','');
-    setSelectedImage({uri:item["thumbnails"]});
-    TrackPlayer.skip(item.id-1);
-    setTrackName(filteredName);
-    playTrack();
-    setIsAudioPlaying(!isAudioPlaying);
-  
-  };
-  
-  useEffect(() => {
-    if (isInitial) {
-      // Alert.alert("come in")
-      const storeData = async (value) => {
-        try {
-          await AsyncStorage.setItem('@trackplayer', value)
-        } catch (e) {
-          // saving error
-        }
-      }
-      storeData(isInitial.toString())
-    } 
-  }, [isInitial]);
-
-  const sendCallback =()=>{
-    setIsAudioPlaying(false);
-  }
-
-  const addSongFav = async(item: any) => {
-    // add items call api
-    Alert.alert('Added in your favourite list');
-    // await TrackPlayer.skipToNext(3)
-    
-  };
-  useFocusEffect(
-    React.useCallback(() => {
-
-      //TrackPlayer.play();
-
-      return () => {
-        resetFirstTime();
-      };
-    }, []),
-  );
-
-  useEffect(()=>{
-    
-    const unsubscribe = navigation.addListener('focus', () => {
-      TrackPlayer.play();
-    });
-    // Return the function to unsubscribe from the event so it gets removed on unmount
-    return unsubscribe;
-  },[navigation]);
-
-  
-  const resetFirstTime = () => {
-    TrackPlayer.reset();
-    TrackPlayer.add(tracks);
-  }
-
-  const resetTrack = () =>{
-    TrackPlayer.reset();
-    TrackPlayer.add(tracks);
-  }
-  const pauseTrack = () => {
-    TrackPlayer.pause();
-  };
-
-  const playTrack = () => {
-    TrackPlayer.play();
-  };
-
-  const optionalList = (item: any) => {
-    Alert.alert(
-      'Options',
-      'Please choose an option',
-      [
-        {
-          text: 'Add to Favourites',
-          onPress: () => {
-            addSongFav(item);
-          },
-        },
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-      ],
-      {cancelable: true},
-    );
-  };
-
-  const testRend = ({item}: any) => {
-    const filteredName = item["Song name"].split('-')[1]?.trim().replace('[NCS Release]','');
-    // const filteredName = item["SongName"].split('-')[1]?.trim().replace('[NCS Release]','');
-    return (
-      <View style={styles.listView}>
-        <View style={styles.songIconView}>
-          {
-            <TouchableOpacity onPress={() => songPlay(item)}>
-              <ImageBackground source={{uri:item["thumbnails"]}} style={styles.songIcon} />
-            </TouchableOpacity>
+    useEffect(() => {
+      if (isInitial) {
+        // Alert.alert("come in")
+        const storeData = async (value:any) => {
+          try {
+            await AsyncStorage.setItem('@trackplayer', value)
+          } catch (e) {
+            // saving error
+            console.error(e)
           }
-        </View>
-        <View style={styles.singerView}>
-          <Text style={styles.songName} ellipsizeMode="tail" numberOfLines={2}>{filteredName.substring(0,20)}</Text>
-          <Text style={styles.singer}  ellipsizeMode="tail" numberOfLines={2}>{item["Singer"].substring(0,20)}</Text>
-        </View>
-        <View style={styles.optionView}>
-          <ImageBtn
-            source={require('../../image/option.png')}
-            onPress={() => optionalList(item)}
-          />
-        </View>
-      </View>
+        }
+        storeData(isInitial.toString())
+      } 
+    }, [isInitial]);
+
+    const sendCallback =()=>{
+      setIsAudioPlaying(false);
+    }
+
+
+    const updateFavor = async (song:any) => {
+      try{
+        const decodedToken = jwtDecode(id);
+        // Alert.alert(JSON.stringify(decodedToken["user_id"]))
+        const userId = decodedToken["user_id"];
+        // Alert.alert(userId)
+        const userRef = doc(firestore, "users", userId);
+        const userSnap = await getDoc(userRef);
+        if(userSnap.exists() && userSnap.data().myFavorSong){
+          await updateDoc(userRef, {
+            myFavorSong: arrayUnion(song),
+          })
+        }
+        else{
+          await updateDoc(userRef, {
+            myFavorSong: [],
+          })
+          await updateDoc(userRef, {
+            myFavorSong: arrayUnion(song),
+          })
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    };
+    const addSongFav = async(item: any) => {
+      // add items call api
+      Alert.alert('Added in your favourite list');
+      updateFavor(item)
+    };
+    useFocusEffect(
+      React.useCallback(() => {
+
+        //TrackPlayer.play();
+
+        return () => {
+          resetFirstTime();
+        };
+      }, []),
     );
-  };
+
+    useEffect(()=>{
+      
+      const unsubscribe = navigation.addListener('focus', async() => {
+        await TrackPlayer.add(tracks);
+        TrackPlayer.play();
+      });
+      // Return the function to unsubscribe from the event so it gets removed on unmount
+      return unsubscribe;
+    },[navigation]);
+
+    // useEffect(() => {
+      
+    //   getUserData();
+    // }, []);
+    const resetFirstTime = () => {
+      TrackPlayer.reset();
+      // TrackPlayer.add(tracks);
+    }
+
+    const pauseTrack = () => {
+      TrackPlayer.pause();
+    };
+
+    const playTrack = () => {
+      TrackPlayer.play();
+    };
+
+    const optionalList = (item: any) => {
+      Alert.alert(
+        'Options',
+        'Please choose an option',
+        [
+          {
+            text: 'Add to Favourites',
+            onPress: () => {
+              addSongFav(item);
+            },
+          },
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+        ],
+        {cancelable: true},
+      );
+    };
+
+    const testRend = ({item}: any) => {
+      const filteredName = item["Song name"].split('-')[1]?.trim().replace('[NCS Release]','');
+      // const filteredName = item["SongName"].split('-')[1]?.trim().replace('[NCS Release]','');
+      return (
+        <View style={styles.listView}>
+          <View style={styles.songIconView}>
+            {
+              <TouchableOpacity onPress={() => songPlay(item)}>
+                <ImageBackground source={{uri:item["thumbnails"]}} style={styles.songIcon} />
+              </TouchableOpacity>
+            }
+          </View>
+          <View style={styles.singerView}>
+            <Text style={styles.songName} ellipsizeMode="tail" numberOfLines={2}>{filteredName.substring(0,20)}</Text>
+            <Text style={styles.singer}  ellipsizeMode="tail" numberOfLines={2}>{item["Singer"].substring(0,20)}</Text>
+          </View>
+          <View style={styles.optionView}>
+            <ImageBtn
+              source={require('../../image/option.png')}
+              onPress={() => optionalList(item)}
+            />
+          </View>
+        </View>
+      );
+    };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -215,11 +283,13 @@ const Recommend = ({navigation, route}: any) => {
         </View>
 
         <View style={styles.btnView}>
+          {currentSong&&
           <ImageBtn
             style={{margin:6}}
             source={require('../../image/add.png')}
-            onPress={addSongFav}
+            onPress={()=>addSongFav(currentSong)}
           />
+          }
           <PlayButton
             style={{margin: 6,left:12}}
             onPause={pauseTrack}

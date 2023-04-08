@@ -7,6 +7,7 @@ import FacialDetection from './FacialDetection';
 import Login from './Login';
 import Recommend from './Recommend';
 import Permission from './Permission';
+import Register from './Register';
 import {Text, View} from 'react-native';
 import styles from '../css/App.scss';
 import { Camera, CameraPermissionStatus } from 'react-native-vision-camera';
@@ -91,6 +92,14 @@ const MyStack = () => {
           }}
         />
         <Stack.Screen name="Permission" component={Permission} 
+          options={{
+            headerTitleStyle: {
+              fontSize: 34,
+              fontWeight: 'bold',
+            },
+          }}
+        />
+        <Stack.Screen name="Register" component={Register} 
           options={{
             headerTitleStyle: {
               fontSize: 34,
