@@ -1,0 +1,73 @@
+.container{
+    flex:1;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+}
+.nameText {
+    color:white;
+    font-size: 21px;
+}
+
+.createDateText {
+    color:white;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+.profileContainer{
+    flex-direction: row;
+    // background-color:blue;
+    height: 180px;
+    padding: 36px;
+    border-bottom-color: white;
+    border-bottom-width: 1;
+}
+
+.profileTextContainer{
+    margin-left: 18px;
+    margin-top: 12px;
+}
+
+.imageContainer{
+    padding: 22px;
+    border: solid white;
+    border-radius: 1000px;
+    width: 120px;
+    height: 120px;
+    // background-color: green;
+}
+
+.icon{
+    height: 80px;
+    width: 65px;
+    // justify-self: center;
+    align-self: center;
+}
+
+.listContainer{
+    flex-direction: row;
+    justify-content: space-between;
+    padding:15px;
+    border-bottom-color: white;
+    border-bottom-width: 1;
+}
+
+.listText{
+    color: white;
+    font-size: 24px;
+}
+
+.arrowContainer{
+    align-self: center;
+}
+
+.arrow{
+
+}
+
+.logoutContainer{
+    // flex-direction: row;
+    align-self: center;
+    padding: 25px;
+}

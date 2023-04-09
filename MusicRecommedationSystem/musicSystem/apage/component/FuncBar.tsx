@@ -21,7 +21,10 @@ const FuncBar = (props: any) => {
         <Text style={styles.fixText}>Music</Text>
       </View>
       <View>
-        <ImageBtn source={require('../../image/user.png')} onPress={test} />
+        <ImageBtn 
+          source={require('../../image/user.png')} 
+          onPress={()=>props.navigation.navigate('Account')}
+        />
         <Text style={styles.fixText}>User</Text>
       </View>
     </View>
