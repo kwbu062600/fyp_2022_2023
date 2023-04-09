@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert,SafeAreaView } from 'react-native';
 import { auth, firestore } from '../../service/firebase';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
 import {doc,setDoc, collection} from 'firebase/firestore';
-const RegisterScreen = ({navigation}) => {
+import CusButton from '../component/CusButton';
+import CusInput from '../component/CusInput';
+const RegisterScreen = ({navigation}:any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
 
   const handleRegister = async() => {
+    if (password == '') {
+      Alert.alert("Cannot register. Please provide sufficient data.")
+      // navigation.navigate("Login")
+      return
+    }
     await createUserWithEmailAndPassword(auth,email, password)
       .then((userCredential) => {
         // Signed in 
@@ -44,28 +51,35 @@ const RegisterScreen = ({navigation}) => {
 
   return (
     // <></>
-    <View style={styles.container}>
-      <TextInput
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-        style={styles.input}
-      />
-      <Button title="Register" onPress={handleRegister} />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Text style={{color:'white', fontSize:21, fontWeight:'bold'}}>Please Enter following information</Text>
+      <View style={styles.inputView}>
+      <CusInput
+            setValue={setEmail}
+            placeholder="Email"
+            value={email}
+            hide={false}
+          />
+        <CusInput
+            setValue={setName}
+            placeholder="Name"
+            value={name}
+            hide={false}
+          />
+       
+          <CusInput
+            setValue={setPassword}
+            placeholder="Password"
+            value={password}
+            hide={true}
+            type="numeric"
+          />
+        </View>
+      <View style={{marginTop:25}}>
+        <CusButton text="Register" onPress={handleRegister} />
+      </View>
+
+    </SafeAreaView>
   );
 };
 
@@ -75,6 +89,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor:'black'
   },
   input: {
     width: '100%',
@@ -85,6 +100,9 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 10,
   },
+  inputView:{
+    width:400
+  }
 });
 
 export default RegisterScreen;

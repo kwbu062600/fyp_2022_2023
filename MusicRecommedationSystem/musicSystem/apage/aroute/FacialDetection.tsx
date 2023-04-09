@@ -85,7 +85,7 @@ const FacialDetection = ({navigation,route}:any) => {
     <SafeAreaView style={styles.container}>
         {response?.assets &&
           response?.assets.map(({uri}: {uri: string}) => (
-            <View key={uri} style={styles.imageContainer}>
+            <View style={styles.imageContainer}>
               <Image
                 resizeMode="cover"
                 resizeMethod="scale"

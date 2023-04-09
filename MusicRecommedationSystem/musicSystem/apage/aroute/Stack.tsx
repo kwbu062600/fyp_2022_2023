@@ -9,6 +9,8 @@ import Recommend from './Recommend';
 import Permission from './Permission';
 import Register from './Register';
 import MusicLibrary from './MusicLibrary';
+import Account from './User';
+import UserSetting from './UserSetting';
 import {Text, View} from 'react-native';
 import styles from '../css/App.scss';
 import { Camera, CameraPermissionStatus } from 'react-native-vision-camera';
@@ -81,7 +83,6 @@ const MyStack = () => {
           name="Facial Detection"
           component={FacialDetection}
           options={{
-            headerBackVisible: false,
             headerStyle: {
               backgroundColor: 'black',
             },
@@ -100,8 +101,14 @@ const MyStack = () => {
             },
           }}
         />
-        <Stack.Screen name="Register" component={Register} 
+        <Stack.Screen
+          name="Register"
+          component={Register}
           options={{
+            headerStyle: {
+              backgroundColor: 'black',
+            },
+            headerTintColor: 'white',
             headerTitleStyle: {
               fontSize: 34,
               fontWeight: 'bold',
@@ -113,6 +120,36 @@ const MyStack = () => {
           component={MusicLibrary}
           options={{
             headerBackVisible: false,
+            headerStyle: {
+              backgroundColor: 'black',
+            },
+            headerTintColor: 'white',
+            headerTitleStyle: {
+              fontSize: 34,
+              fontWeight: 'bold',
+            },
+          }}
+        />
+         <Stack.Screen
+          name="Account"
+          component={Account}
+          options={{
+            headerBackVisible: false,
+            headerStyle: {
+              backgroundColor: 'black',
+            },
+            headerTintColor: 'white',
+            headerTitleStyle: {
+              fontSize: 34,
+              fontWeight: 'bold',
+            },
+          }}
+        />
+
+        <Stack.Screen
+          name="User Setting"
+          component={UserSetting}
+          options={{
             headerStyle: {
               backgroundColor: 'black',
             },

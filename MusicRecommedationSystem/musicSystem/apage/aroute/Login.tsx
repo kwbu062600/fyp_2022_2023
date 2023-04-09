@@ -68,9 +68,9 @@ const LoginPage = ({navigation, route}: any) => {
 
   const onGuest = () => {
     // next page
-    if (username == ac && password == pw) {
-      navigation.navigate('Facial Detection', {id:"1"});
-    }
+ 
+      navigation.navigate('Home', {id:"1"});
+    
   };
 
   const onRegister = () => {
