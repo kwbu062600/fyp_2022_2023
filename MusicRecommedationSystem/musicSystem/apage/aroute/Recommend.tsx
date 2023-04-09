@@ -346,7 +346,7 @@ const Recommend = ({navigation, route}: any) => {
           />
         </View>
       </View>
-      <FuncBar navigation={navigation} id={id}/>
+      {/* <FuncBar navigation={navigation} id={id}/> */}
     </SafeAreaView>
   );
 };
@@ -402,7 +402,7 @@ const styles = StyleSheet.create({
     paddingRight:27
   },
   listContainer:{
-    height: 250,
+    height: 350,
     backgroundColor: 'black',
   },
   listView: {
