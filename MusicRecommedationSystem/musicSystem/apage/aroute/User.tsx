@@ -13,10 +13,13 @@ import CusButton from '../component/CusButton';
 import FuncBar from '../component/FuncBar';
 import ImageBtn from '../component/ImageBtn';
 import styles from '../css/User.scss';
-
-const User = ({navigation}) => {
+import { auth, firestore } from '../../service/firebase';
+import {doc,getDocs, collection,getDoc} from 'firebase/firestore';
+import jwtDecode from 'jwt-decode'; 
+const User = ({navigation, route}:any) => {
     const createDate = "03-10-2022";
-    const username = "KwBuOAO";
+    const {id} = route.params;
+    const [username, setUserName] = useState("");
 
     const listItem = [
         {
@@ -35,6 +38,37 @@ const User = ({navigation}) => {
             option: () => Alert.alert("empty"),
         }
     ]
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', async() => {
+    
+            const getUserData = async () => {
+                try{
+                // Alert.alert(id)
+                const decodedToken = jwtDecode(id);
+        
+                const userId = decodedToken["user_id"];
+                // Alert.alert(JSON.stringify(userId))
+                const userRef = doc(firestore, "users", userId);
+            
+                const userSnap = await getDoc(userRef);
+        
+                const data = userSnap.data();
+                if(data){
+                    setUserName(data.name)
+                }
+               
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+            getUserData();
+        });
+
+        
+        return unsubscribe;
+
+    }, [navigation]);
     const testRend = ({item}:any) => {
         return (
             <View style={styles.listContainer}>

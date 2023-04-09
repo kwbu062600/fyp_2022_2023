@@ -16,7 +16,7 @@ import styles from '../css/UserSetting.scss';
 import Modal from 'react-native-modal';
 import CusInput from '../component/CusInput';
 
-const UserSetting = ({navigation}) => {
+const UserSetting = ({navigation}:any) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const createDate = "03-10-2022";
     const username = "KwBuOAO";

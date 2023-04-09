@@ -23,7 +23,7 @@ const FuncBar = (props: any) => {
       <View>
         <ImageBtn 
           source={require('../../image/user.png')} 
-          onPress={()=>props.navigation.navigate('Account')}
+          onPress={()=>props.navigation.navigate('Account',{id:props.id})}
         />
         <Text style={styles.fixText}>User</Text>
       </View>

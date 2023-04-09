@@ -9,6 +9,8 @@ import Recommend from './Recommend';
 import Permission from './Permission';
 import Register from './Register';
 import MusicLibrary from './MusicLibrary';
+import Account from './User';
+import AccountSetting from './UserSetting';
 import {Text, View} from 'react-native';
 import styles from '../css/App.scss';
 import { Camera, CameraPermissionStatus } from 'react-native-vision-camera';
@@ -113,6 +115,35 @@ const MyStack = () => {
           component={MusicLibrary}
           options={{
             headerBackVisible: false,
+            headerStyle: {
+              backgroundColor: 'black',
+            },
+            headerTintColor: 'white',
+            headerTitleStyle: {
+              fontSize: 34,
+              fontWeight: 'bold',
+            },
+          }}
+        />
+         <Stack.Screen
+          name="Account"
+          component={Account}
+          options={{
+            headerBackVisible: false,
+            headerStyle: {
+              backgroundColor: 'black',
+            },
+            headerTintColor: 'white',
+            headerTitleStyle: {
+              fontSize: 34,
+              fontWeight: 'bold',
+            },
+          }}
+        />
+        <Stack.Screen
+          name="User Setting"
+          component={AccountSetting}
+          options={{
             headerStyle: {
               backgroundColor: 'black',
             },
