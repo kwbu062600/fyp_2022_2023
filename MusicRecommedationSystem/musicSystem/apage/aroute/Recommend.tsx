@@ -14,7 +14,7 @@ import {
 
 import ImageBtn from '../component/ImageBtn';
 import FuncBar from '../component/FuncBar';
-import TrackPlayer, {Capability,Event,useTrackPlayerEvents} from 'react-native-track-player';
+import TrackPlayer, {Capability,Event,State,useTrackPlayerEvents} from 'react-native-track-player';
 import {useFocusEffect} from '@react-navigation/native';
 import PlayButton from '../component/Playbtn/PlayButton';
 import { music_host } from '../api/api';
@@ -28,10 +28,11 @@ const Recommend = ({navigation, route}: any) => {
     const [selectedImage, setSelectedImage] = useState({
       uri: index.thumbnails,
     });
+    const [isPlaying, setIsPlaying] = useState(false);
     // const [isPlayerInitialize, setIsPlayerInitialize] = useState(false);
     const [isAudioPlaying, setIsAudioPlaying] = useState(false);
     const [isInitial, setIsInitial] = useState(false);
-    const [trackName, setTrackName] = useState(index["Song name"].split('-')[1]?.trim().replace('[NCS Release]',''));
+    const [trackName, setTrackName] = useState('');
     // const mus = music_host + "/" + testData[4]["Song name"]+ ".mp3";
     // Alert.alert(mus.replaceAll(" ","%20").replaceAll("[","%5B").replaceAll("]","%5D").replaceAll("&","%26").replaceAll("(","%28").replaceAll(")","%29").replaceAll("||",""))
     const tracks = testData.map(track => ({
@@ -191,6 +192,37 @@ const Recommend = ({navigation, route}: any) => {
         };
       }, []),
     );
+
+    useEffect(() => {
+      const checkPlayerState = async () => {
+        const state = await TrackPlayer.getState();
+        console.log('Current player state:', state);
+        if(state == State.Playing){
+          const track = await TrackPlayer.getCurrentTrack();
+          console.log('Current player track:', track);
+          if(track != null){
+            const detail = await TrackPlayer.getTrack(track);
+            console.log("detail:", detail);
+            if(detail != undefined){
+              const filteredName = detail["title"].split('-')[1]?.trim().replace('[NCS Release]','');
+              setTrackName(filteredName);
+              setSelectedImage({uri:detail["artwork"]})
+            }
+          }
+        }
+        if (state === TrackPlayer.STATE_PLAYING) {
+          setIsPlaying(true);
+        } else {
+          setIsPlaying(false);
+        }
+      };
+    
+      const unsubscribe = TrackPlayer.addEventListener('playback-state', checkPlayerState);
+      
+      return () => {
+        unsubscribe.remove();
+      };
+    }, []);
 
     useEffect(()=>{
       
