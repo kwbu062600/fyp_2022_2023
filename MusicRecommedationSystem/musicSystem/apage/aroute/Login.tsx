@@ -43,7 +43,7 @@ const LoginPage = ({navigation, route}: any) => {
         console.log("User logged in");
         userCredential.user.getIdToken().then((token) => {
           setToken(token);
-          navigation.navigate('Home',{
+          navigation.navigate('Facial Detection',{
             id:token
           })
         });
@@ -109,9 +109,9 @@ const LoginPage = ({navigation, route}: any) => {
           <CusButton text="Login" onPress={handleLogin} />
           <CusButton text="Register" onPress={onRegister} />
         </View>
-        <View style={{marginTop: 10}}>
+        {/* <View style={{marginTop: 10}}>
           <CusButton text="Guest" onPress={onGuest} />
-        </View>
+        </View> */}
       </View>
       {/* <View style={styles.socialLoginView}>
         <TouchableOpacity onPress={onGoogle}>

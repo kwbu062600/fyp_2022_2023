@@ -5,25 +5,24 @@
     background-color: black;
 }
 .inputView {
-    padding:15px;
-    flex:2;
+    padding:12px;
+    flex:1;
     justify-content:center;
-    //background-color: white;
+    // background-color: white;
 }
-
-
 
 .iconView {
     flex: 3;
     align-items: center;
-    //background-color: gray;
+    justify-content: center;
+    // background-color: gray;
 }
 .iconHolder {
     padding: 5px;
 }
 .icon {
-   width: 150px;
-   height: 150px;
+   width: 200px;
+   height: 200px;
 }
 
 .imageContainer {
@@ -43,10 +42,10 @@
 .btnView {
     flex:3;
     align-items: center;
-    //background-color: gray;
+    // background-color: gray;
+    margin-top: 30px;
 }
 .btnList1{
-    margin-top: 15px;
     flex-direction: row;
 }
 
