@@ -13,7 +13,7 @@ import styles from '../css/Home.scss';
 import FuncBar from '../component/FuncBar';
 import ImageBtn from '../component/ImageBtn';
 import Region from '../component/Region';
-import {server_host,API_user,API_user_song, music_host, local_host } from '../api/api';
+// import {server_host,API_user,API_user_song, music_host, local_host } from '../api/api';
 import {fetchData} from '../api/usefulFunction';
 import { auth, firestore } from '../../service/firebase';
 import {doc,getDocs, collection,getDoc} from 'firebase/firestore';

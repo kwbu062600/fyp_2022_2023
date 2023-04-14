@@ -11,7 +11,7 @@ import {
 import styles from '../css/Login.scss';
 import CusButton from '../component/CusButton';
 import CusInput from '../component/CusInput';
-import {server_host, API_user} from '../api/api'
+import {server_host} from '../api/api'
 import { fetchData } from '../api/usefulFunction';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 import { auth, firestore } from '../../service/firebase';
@@ -28,14 +28,14 @@ const LoginPage = ({navigation, route}: any) => {
     password: password
   }
 
-  const onLogin = async() => {
-    await fetchData(`${server_host}${API_user}`,'POST', undefined, loginData )
-    .then((response) => response.json())
-    .then((data) => {setID(data)})
-    if(id) {
-      navigation.navigate('Facial Detection',{id:id})
-    }
-  };
+  // const onLogin = async() => {
+  //   await fetchData(`${server_host}${API_user}`,'POST', undefined, loginData )
+  //   .then((response) => response.json())
+  //   .then((data) => {setID(data)})
+  //   if(id) {
+  //     navigation.navigate('Facial Detection',{id:id})
+  //   }
+  // };
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, username, password)
